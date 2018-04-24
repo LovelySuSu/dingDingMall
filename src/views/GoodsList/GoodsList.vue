@@ -58,6 +58,7 @@
     import PageHeader from '../../components/PageHeader.vue'
     import PageBread from '../../components/PageBread.vue'
     import PageFooter from '../../components/PageFooter.vue'
+    let queryPrdObj = {}
     export default{
         data(){
             return {
@@ -100,8 +101,9 @@
             this.getProductList()
         },
         methods:{
-            getProductList (params) {
-                axios.get('mock/goods',{params:params}).then((res) => {
+            getProductList () {
+                queryPrdObj = Object.assign(queryPrdObj, this.filterPrice, {sort: this.sortChecked})
+                axios.get('mock/goods', {params: queryPrdObj}).then((res) => {
                     console.log(res);
                     let data = (res&&res.data)||{};
                     if (data.code='000') {
@@ -115,7 +117,7 @@
             checkPriceFilter (index) {
                 this.priceChecked = index;
                 this.filterPrice = index === 'all' ? null : this.priceFilterList[index]
-                this.getProductList(this.filterPrice);
+                this.getProductList();
                 this.closeFilterBy();
 
             },
@@ -136,7 +138,7 @@
                 } else {
                     this.isPriceUp = true
                 }
-                this.getPrdList()
+                this.getProductList()
             }
         }
     }
